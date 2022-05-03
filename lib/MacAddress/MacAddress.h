@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// MacAddress8.h - class to make it easier to handle BSSID and MAC addresses.
+// MacAddress.h - class to make it easier to handle BSSID and MAC addresses.
 // 
 // Copyright 2022 David McCurley
 // Licensed under the Apache License, Version 2.0 (the "License").
@@ -15,36 +15,39 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------------
 
-#ifndef MacAddress8_h
-#define MacAddress8_h
+#ifndef MacAddress_h
+#define MacAddress_h
 
 #include <WString.h>
 
-// A class to make it easier to handle and pass around 8-byte EUI-64(used for IEEE 802.15.4) addresses. See <esp_mac.h>.
-class MacAddress8 {
+// A class to make it easier to handle and pass around 6-byte BSSID and MAC addresses.
+class MacAddress {
 private:
     union {
-        uint8_t bytes[8];
+        struct {
+            uint8_t align[2];
+            uint8_t bytes[6];
+        };
         uint64_t val;
     } _mac;
 
 public:
-    MacAddress8();
-    MacAddress8(uint64_t mac);
-    MacAddress8(const uint8_t *macbytearray);
-    virtual ~MacAddress8() {}
+    MacAddress();
+    MacAddress(uint64_t mac);
+    MacAddress(const uint8_t *macbytearray);
+    virtual ~MacAddress() {}
     bool fromCStr(const char *buf);
     bool fromString(const String &macstr);
     void toBytes(uint8_t *buf);
-    int toCStr(char *buf);
+    int  toCStr(char *buf);
     String toString() const;
     uint64_t Value();
 
     operator uint64_t() const;
-    MacAddress8& operator=(const uint8_t *mac);
-    MacAddress8& operator=(uint64_t macval);
+    MacAddress& operator=(const uint8_t *mac);
+    MacAddress& operator=(uint64_t macval);
     bool operator==(const uint8_t *mac) const;
-    bool operator==(const MacAddress8& mac2) const;
+    bool operator==(const MacAddress& mac2) const;
 };
 
 #endif

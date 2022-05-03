@@ -1,23 +1,23 @@
 #include "Arduino.h"
-#include "MacAddress6.h"
+#include "MacAddress.h"
 #include "MacAddress8.h"
 #include <unity.h>
 
 void test_constructor_def(void) {
-    MacAddress6 ma;
+    MacAddress ma;
     TEST_ASSERT_EQUAL(0, ma.Value());
 }
 
 void test_constructor_ulong(void) {
   uint64_t maval = 123456789012345;
-  MacAddress6 ma = MacAddress6(maval);
+  MacAddress ma = MacAddress(maval);
   TEST_ASSERT_EQUAL(maval, ma.Value());
 }
 
 void test_constructor_bytearray(void) {
   uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
   uint8_t macbytes2[6];
-  MacAddress6 ma = MacAddress6(macbytes);
+  MacAddress ma = MacAddress(macbytes);
   ma.toBytes(macbytes2);
   TEST_ASSERT_EQUAL(0, memcmp(macbytes, macbytes2, 6));
 }
@@ -25,7 +25,7 @@ void test_constructor_bytearray(void) {
 void test_cstr(void) {
   char cs1[32];
   char cs2[32];
-  MacAddress6 ma;
+  MacAddress ma;
   sprintf(cs1, "AA:BB:CC:DD:EE:FF");
   ma.fromCStr(cs1);
   ma.toCStr(cs2);
@@ -33,7 +33,7 @@ void test_cstr(void) {
 }
 
 void test_string(void) {
-  MacAddress6 ma;
+  MacAddress ma;
   String s1 = "AA:BB:CC:DD:EE:FF";
   ma.fromString(s1);
   String s2 = ma.toString();
@@ -43,20 +43,26 @@ void test_string(void) {
 void test_copy_bytes(void) {
   uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
   uint8_t macbytes2[6];
-  MacAddress6 ma = macbytes;                //Implicit byte copy
+  MacAddress ma = macbytes;                //Implicit byte copy
   ma.toBytes(macbytes2);
   TEST_ASSERT_EQUAL(0, memcmp(macbytes, macbytes2, 6));
 }
 
 void test_copy_val(void) {
   uint64_t maval = 123456789012345;
-  MacAddress6 ma = maval;                   //Convert uint64_t to object
+  MacAddress ma = maval;                   //Convert uint64_t to object
   TEST_ASSERT_EQUAL(maval, ma);             //Implicit conversion to uint64_t
 }
 
+void test_class_equals_ba(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  TEST_ASSERT_EQUAL(true, ma==macbytes);
+}
+
 void test_classes_equal(void) {
-  MacAddress6 ma1;
-  MacAddress6 ma2;
+  MacAddress ma1;
+  MacAddress ma2;
   ma1.fromString("A1:B2:C3:D4:E5:D6");
   ma2.fromString("A1:B2:C3:D4:E5:D6");
   TEST_ASSERT_EQUAL(true, ma1==ma2);
@@ -115,6 +121,12 @@ void test_8copy_val(void) {
   TEST_ASSERT_EQUAL(maval, ma);             //Implicit conversion to uint64_t
 }
 
+void test_8class_equals_ba(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress ma = macbytes;
+  TEST_ASSERT_EQUAL(true, ma==macbytes);
+}
+
 void test_8classes_equal(void) {
   MacAddress8 ma1;
   MacAddress8 ma2;
@@ -132,6 +144,7 @@ void runtests(void) {
     RUN_TEST(test_string);
     RUN_TEST(test_copy_bytes);
     RUN_TEST(test_copy_val);
+    RUN_TEST(test_class_equals_ba);
     RUN_TEST(test_classes_equal);
 
     RUN_TEST(test_8constructor_def);
@@ -141,6 +154,7 @@ void runtests(void) {
     RUN_TEST(test_8string);
     RUN_TEST(test_8copy_bytes);
     RUN_TEST(test_8copy_val);
+    RUN_TEST(test_8class_equals_ba);
     RUN_TEST(test_8classes_equal);
     UNITY_END();
 }

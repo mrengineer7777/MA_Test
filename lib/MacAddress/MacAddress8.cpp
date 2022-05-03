@@ -34,8 +34,8 @@ bool MacAddress8::fromCStr(const char *buf) {
 }
 
 //Parse user entered string into MAC address
-bool MacAddress8::fromString(const String &address) {
-    return fromCStr(address.c_str());
+bool MacAddress8::fromString(const String &macstr) {
+    return fromCStr(macstr.c_str());
 }
 
 //Copy MAC into 8 byte array
@@ -63,6 +63,13 @@ uint64_t MacAddress8::Value() {
     return _mac.val;
 }
 
+//Implicit conversion object to number [same as .Value()]
+MacAddress8::operator uint64_t() const
+{
+    return _mac.val;
+}
+
+//Overloaded copy operators to allow initialisation of MacAddress objects from other types
 MacAddress8& MacAddress8::operator=(const uint8_t *mac)
 {
     memcpy(_mac.bytes, mac, sizeof(_mac.bytes));
@@ -73,4 +80,16 @@ MacAddress8& MacAddress8::operator=(uint64_t macval)
 {
     _mac.val = macval;
     return *this;
+}
+
+//Compare class to byte array
+bool MacAddress8::operator==(const uint8_t *mac) const
+{
+    return !memcmp(_mac.bytes, mac, sizeof(_mac.bytes));
+}
+
+//Allow comparing value of two classes
+bool MacAddress8::operator==(const MacAddress8& mac2) const
+{
+    return _mac.val == mac2._mac.val;
 }

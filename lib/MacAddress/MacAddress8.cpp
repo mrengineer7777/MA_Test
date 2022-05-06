@@ -123,6 +123,18 @@ MacAddress8::operator const uint64_t*() const {
     return &_mac.val;
 }
 
+size_t MacAddress8::printTo(Print& p) const
+{
+    size_t n = 0;
+    for(int i = 0; i < 8; i++) {
+        if(i){
+            n += p.print(':');
+        }
+        n += p.printf("%02X", _mac.bytes[i]);
+    }
+    return n;
+}
+
 //Bounds checking
 int MacAddress8::EnforceIndexBounds(int i) const {
     if(i < 0) {

@@ -2,6 +2,7 @@
 #include "MacAddress.h"
 #include "MacAddress8.h"
 #include <unity.h>
+#include "StreamString.h"
 
 void test_constructor_def(void) {
     MacAddress ma;
@@ -131,14 +132,22 @@ void test_pointer_to_uint64_t(void) {
   TEST_ASSERT_EQUAL(true, *ptr==0x123456);
 }
 
-// void test_printto(void) {
-//   uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
-//   MacAddress ma = macbytes;
-//   char buf[18];
-//   ma.toCStr(buf);
-//   char buf2[18];
-//   ma.print(buf2);
-// }
+void test_printto(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+
+  // it will print the mac address to a String
+  StreamString ss2;
+  ma.printTo(ss2);   //Test printTo. Should be same as .toString().
+  // Serial.print("ss2=");
+  // Serial.println(ss2);
+
+  String s3 = ma.toString();
+  // Serial.print("s3=");
+  // Serial.println(s3);
+
+  TEST_ASSERT_EQUAL(true, ss2 == s3);
+}
 
 
 
@@ -270,6 +279,23 @@ void test_8pointer_to_uint64_t(void) {
   TEST_ASSERT_EQUAL(true, *ptr==0x12345678);
 }
 
+void test_8printto(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xA8, 0xB3};
+  MacAddress8 ma = macbytes;
+
+  // it will print the mac address to a String
+  StreamString ss2;
+  ma.printTo(ss2);   //Test printTo. Should be same as .toString().
+  // Serial.print("ss2=");
+  // Serial.println(ss2);
+
+  String s3 = ma.toString();
+  // Serial.print("s3=");
+  // Serial.println(s3);
+
+  TEST_ASSERT_EQUAL(true, ss2 == s3);
+}
+
 void runtests(void) {
     UNITY_BEGIN();
     RUN_TEST(test_constructor_def);
@@ -290,7 +316,7 @@ void runtests(void) {
     RUN_TEST(test_setindexedbyte_outofrange_high);
     RUN_TEST(test_pointer_to_bytearray);
     RUN_TEST(test_pointer_to_uint64_t);
-    //RUN_TEST(test_printto);
+    RUN_TEST(test_printto);
 
     RUN_TEST(test_8constructor_def);
     RUN_TEST(test_8constructor_ulong);
@@ -310,7 +336,7 @@ void runtests(void) {
     RUN_TEST(test_8setindexedbyte_outofrange_high);
     RUN_TEST(test_8pointer_to_bytearray);
     RUN_TEST(test_8pointer_to_uint64_t);
-    //RUN_TEST(test_8printto);
+    RUN_TEST(test_8printto);
 
     UNITY_END();
 }

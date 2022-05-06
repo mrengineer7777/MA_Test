@@ -23,7 +23,7 @@
 #include <Printable.h>
 
 // A class to make it easier to handle and pass around 8-byte EUI-64(used for IEEE 802.15.4) addresses. See <esp_mac.h>.
-class MacAddress8 {
+class MacAddress8 : public Printable {
 private:
     union {
         uint8_t bytes[8];
@@ -52,6 +52,8 @@ public:
     operator uint64_t() const;
     operator const uint8_t*() const;
     operator const uint64_t*() const;
+
+    virtual size_t printTo(Print& p) const;
 
     // future use in Arduino Networking 
     friend class EthernetClass;

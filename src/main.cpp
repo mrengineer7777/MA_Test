@@ -22,6 +22,14 @@ void test_constructor_bytearray(void) {
   TEST_ASSERT_EQUAL(0, memcmp(macbytes, macbytes2, 6));
 }
 
+void test_constructor_bytes(void) {
+  uint8_t macbytes[] = {0x00, 0xCD, 0x01, 0xFE, 0xB2, 0xF0};
+  MacAddress ma = MacAddress(0x00, 0xCD, 0x01, 0xFE, 0xB2, 0xF0);
+  uint8_t bytes[6];
+  ma.toBytes(bytes);
+  TEST_ASSERT_EQUAL(0, memcmp(macbytes, bytes, 6));
+}
+
 void test_cstr(void) {
   char cs1[32];
   char cs2[32];
@@ -68,6 +76,70 @@ void test_classes_equal(void) {
   TEST_ASSERT_EQUAL(true, ma1==ma2);
 }
 
+void test_readindexedbyte(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  uint8_t b5 = ma[5];
+  TEST_ASSERT_EQUAL(b5, macbytes[5]);
+}
+
+void test_readindexedbyte_outofrange_neg(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  uint8_t b0 = ma[-1];
+  TEST_ASSERT_EQUAL(b0, macbytes[0]);
+}
+
+void test_readindexedbyte_outofrange_high(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  uint8_t b5 = ma[999];
+  TEST_ASSERT_EQUAL(b5, macbytes[5]);
+}
+
+void test_setindexedbyte(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  ma[1] = 0xB9;
+  TEST_ASSERT_EQUAL(ma[1], 0xB9);
+}
+
+void test_setindexedbyte_outofrange_neg(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  ma[-1] = 0xB9;
+  TEST_ASSERT_EQUAL(ma[0], 0xB9);
+}
+
+void test_setindexedbyte_outofrange_high(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  ma[999] = 0x14;
+  TEST_ASSERT_EQUAL(ma[5], 0x14);
+}
+
+void test_pointer_to_bytearray(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+  MacAddress ma = macbytes;
+  const uint8_t *ptr = ma;
+  TEST_ASSERT_EQUAL(0, memcmp(ptr, macbytes, 6));
+}
+
+void test_pointer_to_uint64_t(void) {
+  MacAddress ma = 0x123456;
+  const uint64_t *ptr = ma;
+  TEST_ASSERT_EQUAL(true, *ptr==0x123456);
+}
+
+// void test_printto(void) {
+//   uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6};
+//   MacAddress ma = macbytes;
+//   char buf[18];
+//   ma.toCStr(buf);
+//   char buf2[18];
+//   ma.print(buf2);
+// }
+
 
 
 void test_8constructor_def(void) {
@@ -87,6 +159,14 @@ void test_8constructor_bytearray(void) {
   MacAddress8 ma = MacAddress8(macbytes);
   ma.toBytes(macbytes2);
   TEST_ASSERT_EQUAL(0, memcmp(macbytes, macbytes2, 8));
+}
+
+void test_8constructor_bytes(void) {
+  uint8_t macbytes[] = {0x00, 0xCD, 0x01, 0xFE, 0xB2, 0xF0, 0x67, 0x44};
+  MacAddress8 ma = MacAddress8(0x00, 0xCD, 0x01, 0xFE, 0xB2, 0xF0, 0x67, 0x44);
+  uint8_t bytes[8];
+  ma.toBytes(bytes);
+  TEST_ASSERT_EQUAL(0, memcmp(macbytes, bytes, 8));
 }
 
 void test_8cstr(void) {
@@ -135,27 +215,103 @@ void test_8classes_equal(void) {
   TEST_ASSERT_EQUAL(true, ma1==ma2);
 }
 
+void test_8readindexedbyte(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  uint8_t b7 = ma[7];
+  TEST_ASSERT_EQUAL(b7, macbytes[7]);
+}
+
+void test_8readindexedbyte_outofrange_neg(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  uint8_t b0 = ma[-1];
+  TEST_ASSERT_EQUAL(b0, macbytes[0]);
+}
+
+void test_8readindexedbyte_outofrange_high(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  uint8_t b7 = ma[999];
+  TEST_ASSERT_EQUAL(b7, macbytes[7]);
+}
+
+void test_8setindexedbyte(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  ma[6] = 0xB9;
+  TEST_ASSERT_EQUAL(ma[6], 0xB9);
+}
+
+void test_8setindexedbyte_outofrange_neg(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  ma[-1] = 0xB9;
+  TEST_ASSERT_EQUAL(ma[0], 0xB9);
+}
+
+void test_8setindexedbyte_outofrange_high(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  ma[999] = 0x14;
+  TEST_ASSERT_EQUAL(ma[7], 0x14);
+}
+
+void test_8pointer_to_bytearray(void) {
+  uint8_t macbytes[] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0xAA, 0xBB};
+  MacAddress8 ma = macbytes;
+  const uint8_t *ptr = ma;
+  TEST_ASSERT_EQUAL(0, memcmp(ptr, macbytes, 8));
+}
+
+void test_8pointer_to_uint64_t(void) {
+  MacAddress8 ma = 0x12345678;
+  const uint64_t *ptr = ma;
+  TEST_ASSERT_EQUAL(true, *ptr==0x12345678);
+}
+
 void runtests(void) {
     UNITY_BEGIN();
     RUN_TEST(test_constructor_def);
     RUN_TEST(test_constructor_ulong);
     RUN_TEST(test_constructor_bytearray);
+    RUN_TEST(test_constructor_bytes);
     RUN_TEST(test_cstr);
     RUN_TEST(test_string);
     RUN_TEST(test_copy_bytes);
     RUN_TEST(test_copy_val);
     RUN_TEST(test_class_equals_ba);
     RUN_TEST(test_classes_equal);
+    RUN_TEST(test_readindexedbyte);
+    RUN_TEST(test_readindexedbyte_outofrange_neg);
+    RUN_TEST(test_readindexedbyte_outofrange_high);
+    RUN_TEST(test_setindexedbyte);
+    RUN_TEST(test_setindexedbyte_outofrange_neg);
+    RUN_TEST(test_setindexedbyte_outofrange_high);
+    RUN_TEST(test_pointer_to_bytearray);
+    RUN_TEST(test_pointer_to_uint64_t);
+    //RUN_TEST(test_printto);
 
     RUN_TEST(test_8constructor_def);
     RUN_TEST(test_8constructor_ulong);
     RUN_TEST(test_8constructor_bytearray);
+    RUN_TEST(test_8constructor_bytes);
     RUN_TEST(test_8cstr);
     RUN_TEST(test_8string);
     RUN_TEST(test_8copy_bytes);
     RUN_TEST(test_8copy_val);
     RUN_TEST(test_8class_equals_ba);
     RUN_TEST(test_8classes_equal);
+    RUN_TEST(test_8readindexedbyte);
+    RUN_TEST(test_8readindexedbyte_outofrange_neg);
+    RUN_TEST(test_8readindexedbyte_outofrange_high);
+    RUN_TEST(test_8setindexedbyte);
+    RUN_TEST(test_8setindexedbyte_outofrange_neg);
+    RUN_TEST(test_8setindexedbyte_outofrange_high);
+    RUN_TEST(test_8pointer_to_bytearray);
+    RUN_TEST(test_8pointer_to_uint64_t);
+    //RUN_TEST(test_8printto);
+
     UNITY_END();
 }
 
